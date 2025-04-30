@@ -8,6 +8,7 @@ define('DISABLE_PLAIN_TEXT', ["\\*", "\\fonttbl", "\\colortbl", "\\datastore", "
 // '{' ~ '}'
 class BlockNode implements Node {
   private $childNodes;
+  private $show_text;
 
   public function __construct(array $childNodes) {
     $this->childNodes = $childNodes;
