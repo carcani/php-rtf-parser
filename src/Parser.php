@@ -35,22 +35,33 @@ class Parser {
     return new Document($nodes);
   }
 
+  // Hexadecimal input string must have an even length
+  private function dec2hex($int) {
+    $hex = dechex($int);
+    if (strlen($hex)%2 != 0) {
+      $hex = str_pad($hex, strlen($hex) + 1, '0', STR_PAD_LEFT);
+    }
+    return $hex;
+  }
+
   // Concat one or more CharNode to TextNode
   private function parseOptimize() {
     $nodes = [];
     $hex = '';
     foreach ($this->doParse() as $node) {
       if ($node->name() === 'char') {
-        $hex .= dechex($node->charCode());
+        $hex .= $this->dec2hex($node->charCode());
         continue;
       }
-      if (!empty($hex)) {
+
+      if (!empty($hex) && ctype_xdigit($hex)) {
         $nodes[] = new Node\TextNode(hex2bin($hex));
         $hex = '';
       }
       $nodes[] = $node;
     }
-    if (!empty($hex)) {
+
+    if (!empty($hex) && ctype_xdigit($hex)) {
       $nodes[] = new Node\TextNode(hex2bin($hex));
     }
     return $nodes;
